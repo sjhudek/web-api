@@ -1,17 +1,57 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <link rel="stylesheet" href="./assets/css/style.css">
-    <title>Timed Quiz</title>
-</head>
-<body>
-    <h1></h1>
-    <div id="btn"></div>
-    <div id="timer"></div>
-<script src="./assets/js/main.js" defer></script>
-</body>
+<html>
+  <head>
+    <title>Interactive Quiz</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="./assets/css/style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="large-font">Interactive Quiz</div>
+      <button class="start-button" id="start-button">Start</button>
+    </header>
+
+    <main>
+      <section>
+        <div class="question">
+          <div id="question"></div>
+        </div>
+        <div class="answer-choices">
+          <div id="answer-choices">
+            <ul>
+              <li id="choice1"></li>
+              <li id="choice2"></li>
+              <li id="choice3"></li>
+              <li id="choice4"></li>
+            </ul>
+          </div>
+        </div>
+        <div class="correct-answer">
+          <div id="correct-answer"></div>
+        </div>
+      </section>
+
+      <section>
+        <div class="card results">
+          <div class="win-loss-container">
+            <div>
+              <h2 class="initials" id="initials"></h2>
+              <h2 class="score" id="score">Score:</h2>
+              <h2>Correct: <span class="correct" id="correct">0 </span> </h2>
+              <h2>Incorrect: <span class="incorrect" id="incorrect">0</span></h2>
+            </div>
+            <button class="reset-button">Reset Score</button>
+          </div>
+          <div class="card timer" id="timer">
+            <div class="timer-text">
+              <div class="large-font timer-count">15</div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+    </main>
+    <script src="./assets/js/main.js"></script>
+  </body>
 </html>

@@ -22,60 +22,185 @@ THEN I can save my initials and my score
 // (3) WHEN I answer a question incorrectly
 // -- (3a) THEN time is subtracted from the clock
 // (4) WHEN all questions are answered or the timer reaches 0
-// -- THEN the game is over
 // (5) WHEN the game is over
 // -- (5a)THEN I can save my initials and my score
 
-
 // **************************
+/* eslint-env es6 */
 
-/****** begin button ******/
-// WHEN I click the start button
-const btnDiv = document.getElementById("btn");
-const btn = document.createElement("BUTTON");
-btn.innerHTML = "I am a button";
-btnDiv.appendChild(btn);
-/****** end button *******/
+/* begin trivia Q&A object */
+const triviaQuestion = [
+  {
+    questionText:
+      "Which of the following countries is NOT a member of the European Union?",
+    answerChoices: {
+      A: "Iceland",
+      B: "Switzerland",
+      C: "Finland",
+      D: "Cyprus",
+    },
+    correctAnswer: "B: Switzerland",
+  },
+  {
+    questionText: "Which planet in our solar system has the most moons?",
+    answerChoices: {
+      A: "Jupiter",
+      B: "Saturn",
+      C: "Neptune",
+      D: "Uranus",
+    },
+    correctAnswer: "A: Jupiter",
+  },
+  {
+    questionText: "Which famous musician was known as the 'King of Pop'?",
+    answerChoices: {
+      A: "Prince",
+      B: "Michael Jackson",
+      C: "Elvis Presley",
+      D: "John Lennon",
+    },
+    correctAnswer: "B: Michael Jackson",
+  },
+  {
+    questionText: "What is the capital city of Australia?",
+    answerChoices: {
+      A: "Sydney",
+      B: "Melbourne",
+      C: "Brisbane",
+      D: "Canberra",
+    },
+    correctAnswer: "D: Canberra",
+  },
+  {
+    questionText: "Who was the first person to walk on the moon?",
+    answerChoices: {
+      A: "Neil Armstrong",
+      B: "Buzz Aldrin",
+      C: "Yuri Gagarin",
+      D: "Alan Shepard",
+    },
+    correctAnswer: "A: Neil Armstrong",
+  },
+];
+/* end trivia Q&A object */
 
-/***** begin countdown timer ******/
-// 'timeStart' is assigned a value using new Date().getTime()
-let timeStart // used to calculate elapsed time
+/* begin countdown timer */
+const timerCount = document.querySelector('.timer-count');
+const startButton = document.querySelector('#start-button');
+let timeLeft = 15;
+let timerId;
 
-// -- (1a) a timer starts
-const timeLeft = 31;
-const elem = document.getElementById('timer'); // retrieves ID 'timer' from the HTML document and updates the remaining time via 'elem.innerHTML'in 'countdown()'
+function startTimer() {
+  timerId = setInterval(() => {
+    if (timeLeft <= 0) {
+      clearInterval(timerId);
+      // Do something when the timer reaches 0
+    } else {
+      timeLeft--;
+      timerCount.textContent = timeLeft;
+    }
+  }, 1000);
+} 
 
-let timerId; // variable to store the interval ID
+/* end countdown timer */
 
-const btnClick = btn.addEventListener("click", function() {
-    timeStart = new Date().getTime();
-    timerId = setInterval(countdown, 1000);
-    btn.disabled = true; // disable the button after it's clicked to prevent multiple timers from running
-  });
+/* start button */
+startButton.addEventListener('click', () => {
+  startTimer();
+  showQuestion();
+});
 
-// countdown() calculates the time elapsed since the timer started
-// then subtracts it from the initial time (timeLeft)
-// then displays the remaining time in the elem element
-function countdown() {
-  const now = new Date().getTime(); // used to count remaining time
-  const timeElapsed = now - timeStart; //elapsed time
-  const timeRemaining = timeLeft - Math.floor(timeElapsed / 1000); // remaining time
-  if (timeRemaining <= -1) {
-    clearInterval(timerId); // clears the interval set in line 45
-    doSomething(); // calls the 'doSomething()' function
-  } else {
-    elem.innerHTML = timeRemaining + ' seconds remaining';
+/* begin questions */
+let currentQuestionIndex = 0;
+
+function showQuestion() {
+  const currentQuestion = triviaQuestion[currentQuestionIndex];
+  const questionText = document.querySelector('#question');
+  const answerChoices = document.querySelector('#answer-choices');
+
+  questionText.textContent = currentQuestion.questionText;
+  answerChoices.innerHTML = '';
+  
+  // loop through the answer choices and add them to the answerChoices element
+  for (const choice in currentQuestion.answerChoices) {
+    const li = document.createElement('li');
+    li.textContent = `${choice}: ${currentQuestion.answerChoices[choice]}`;
+    li.addEventListener('click', () => {
+      // check if the selected answer is correct
+      if (li.textContent === currentQuestion.correctAnswer) {
+        // increment the correct answer count
+        const correctCount = document.querySelector('#correct');
+        correctCount.textContent = parseInt(correctCount.textContent) + 1;
+      } else {
+        // increment the incorrect answer count
+        const incorrectCount = document.querySelector('#incorrect');
+        incorrectCount.textContent = parseInt(incorrectCount.textContent) + 1;
+      }
+      
+      // move on to the next question
+      currentQuestionIndex++;
+      if (currentQuestionIndex < triviaQuestion.length) {
+        showQuestion();
+      } else {
+        // quiz is over
+        clearInterval(timerId);
+        // Do something when the quiz is over
+      }
+    });
+    answerChoices.appendChild(li);
   }
 }
+/* end questions */
 
-// doSomething() displays an alert when the timer ends
-function doSomething() {
-  alert("Time's up!");
-}
-/***** end countdown timer ******/
 
-/* begin question when timer starts */
+  // listen for key events on the document and check if the pressed key corresponds to one of the answer choices
+  document.addEventListener('keydown', event => {
+    if (event.key === 'a') {
+      checkAnswer('A');
+    } else if (event.key === 'b') {
+      checkAnswer('B');
+    } else if (event.key === 'c') {
+      checkAnswer('C');
+    } else if (event.key === 'd') {
+      checkAnswer('D');
+    }
+  });
 
-// btnClick.
+  /* begin show correct / incorrect score */
+  let correctAnswers = 0;
+  let incorrectAnswers = 0;
+  
+  function updateScore() {
+    document.getElementById('correct').textContent = `Correct: ${correctAnswers}`;
+    document.getElementById('incorrect').textContent = `Incorrect: ${incorrectAnswers}`;
+  }
+  
+  function checkAnswer(answerElem) {
+    if (!currentQuestion) {
+      return;
+    }
+    
+    var selectedAnswer = answerElem.dataset.value;
+    var correctAnswer = currentQuestion.correctAnswer;
+    var feedback = answerElem.querySelector('.answer-feedback');
+    
+    if (selectedAnswer === correctAnswer) {
+      feedback.textContent = 'Correct!';
+      feedback.classList.add('correct');
+      correctAnswers++;
+    } else {
+      feedback.textContent = 'Incorrect';
+      feedback.classList.add('incorrect');
+      incorrectAnswers++;
+    }
+    
+    updateScore();
+    
+    answerElems.forEach(function(elem) {
+      elem.classList.add('disabled');
+    });
+    
+    nextButton.classList.remove('disabled');
+  }  
+  
 
-/* end question when timer starts */
