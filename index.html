@@ -13,7 +13,7 @@
     </header>
 
     <main>
-      <section>
+      <section id="question-section">
         <div class="question">
           <div id="question"></div>
         </div>
@@ -41,13 +41,19 @@
               <h2>Correct: <span class="correct" id="correct">0 </span> </h2>
               <h2>Incorrect: <span class="incorrect" id="incorrect">0</span></h2>
             </div>
-            <button class="reset-button">Reset Score</button>
+            <!-- <button class="reset-button">Reset Score</button> -->
           </div>
           <div class="card timer" id="timer">
             <div class="timer-text">
               <div class="large-font timer-count">15</div>
             </div>
 
+          </div>
+          <div class="endPage">
+            <h2 id="userScore"></h2>
+            <h2>Enter Your Initials</h2>
+            <input type="text" id="initials" />
+            <button id="save">Save Initials</button>
           </div>
         </div>
       </section>

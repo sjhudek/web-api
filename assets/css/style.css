@@ -146,3 +146,6 @@ li:hover {
     height: 200px;
   }
  
+.endPage {
+  display: none;
+}

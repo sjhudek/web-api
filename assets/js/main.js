@@ -85,8 +85,8 @@ const triviaQuestion = [
 /* end trivia Q&A object */
 
 /* begin countdown timer */
-const timerCount = document.querySelector('.timer-count');
-const startButton = document.querySelector('#start-button');
+const timerCount = document.querySelector(".timer-count");
+const startButton = document.querySelector("#start-button");
 let timeLeft = 15;
 let timerId;
 
@@ -95,17 +95,18 @@ function startTimer() {
     if (timeLeft <= 0) {
       clearInterval(timerId);
       // Do something when the timer reaches 0
+      gameOver();
     } else {
       timeLeft--;
       timerCount.textContent = timeLeft;
     }
   }, 1000);
-} 
+}
 
 /* end countdown timer */
 
 /* start button */
-startButton.addEventListener('click', () => {
+startButton.addEventListener("click", () => {
   startTimer();
   showQuestion();
 });
@@ -115,28 +116,29 @@ let currentQuestionIndex = 0;
 
 function showQuestion() {
   const currentQuestion = triviaQuestion[currentQuestionIndex];
-  const questionText = document.querySelector('#question');
-  const answerChoices = document.querySelector('#answer-choices');
+  const questionText = document.querySelector("#question");
+  const answerChoices = document.querySelector("#answer-choices");
 
   questionText.textContent = currentQuestion.questionText;
-  answerChoices.innerHTML = '';
-  
+  answerChoices.innerHTML = "";
+
   // loop through the answer choices and add them to the answerChoices element
   for (const choice in currentQuestion.answerChoices) {
-    const li = document.createElement('li');
+    const li = document.createElement("li");
     li.textContent = `${choice}: ${currentQuestion.answerChoices[choice]}`;
-    li.addEventListener('click', () => {
+    li.addEventListener("click", () => {
       // check if the selected answer is correct
       if (li.textContent === currentQuestion.correctAnswer) {
         // increment the correct answer count
-        const correctCount = document.querySelector('#correct');
+        const correctCount = document.querySelector("#correct");
         correctCount.textContent = parseInt(correctCount.textContent) + 1;
       } else {
         // increment the incorrect answer count
-        const incorrectCount = document.querySelector('#incorrect');
+        const incorrectCount = document.querySelector("#incorrect");
         incorrectCount.textContent = parseInt(incorrectCount.textContent) + 1;
+        timeLeft = timeLeft - 5;
       }
-      
+
       // move on to the next question
       currentQuestionIndex++;
       if (currentQuestionIndex < triviaQuestion.length) {
@@ -145,62 +147,63 @@ function showQuestion() {
         // quiz is over
         clearInterval(timerId);
         // Do something when the quiz is over
+        gameOver();
       }
     });
     answerChoices.appendChild(li);
   }
 }
+
+function gameOver() {
+  const endPageEl = document.querySelector(".endPage");
+  endPageEl.style.display = "block";
+  const questionSection = document.querySelector("#question-section");
+  questionSection.style.display = "none";
+}
+
+const initalsBtn = document.querySelector("#save");
+const saveInitials = document.querySelector("#initials");
+initalsBtn.addEventListener("click", function (event) {
+  event.preventDefault();
+  console.log(saveInitials.value);
+});
 /* end questions */
 
+/* begin show correct / incorrect score */
+let correctAnswers = 0;
+let incorrectAnswers = 0;
 
-  // listen for key events on the document and check if the pressed key corresponds to one of the answer choices
-  document.addEventListener('keydown', event => {
-    if (event.key === 'a') {
-      checkAnswer('A');
-    } else if (event.key === 'b') {
-      checkAnswer('B');
-    } else if (event.key === 'c') {
-      checkAnswer('C');
-    } else if (event.key === 'd') {
-      checkAnswer('D');
-    }
+function updateScore() {
+  document.getElementById("correct").textContent = `Correct: ${correctAnswers}`;
+  document.getElementById(
+    "incorrect"
+  ).textContent = `Incorrect: ${incorrectAnswers}`;
+}
+
+function checkAnswer(answerElem) {
+  if (!currentQuestion) {
+    return;
+  }
+
+  var selectedAnswer = answerElem.dataset.value;
+  var correctAnswer = currentQuestion.correctAnswer;
+  var feedback = answerElem.querySelector(".answer-feedback");
+
+  if (selectedAnswer === correctAnswer) {
+    feedback.textContent = "Correct!";
+    feedback.classList.add("correct");
+    correctAnswers++;
+  } else {
+    feedback.textContent = "Incorrect";
+    feedback.classList.add("incorrect");
+    incorrectAnswers++;
+  }
+
+  updateScore();
+
+  answerElems.forEach(function (elem) {
+    elem.classList.add("disabled");
   });
 
-  /* begin show correct / incorrect score */
-  let correctAnswers = 0;
-  let incorrectAnswers = 0;
-  
-  function updateScore() {
-    document.getElementById('correct').textContent = `Correct: ${correctAnswers}`;
-    document.getElementById('incorrect').textContent = `Incorrect: ${incorrectAnswers}`;
-  }
-  
-  function checkAnswer(answerElem) {
-    if (!currentQuestion) {
-      return;
-    }
-    
-    var selectedAnswer = answerElem.dataset.value;
-    var correctAnswer = currentQuestion.correctAnswer;
-    var feedback = answerElem.querySelector('.answer-feedback');
-    
-    if (selectedAnswer === correctAnswer) {
-      feedback.textContent = 'Correct!';
-      feedback.classList.add('correct');
-      correctAnswers++;
-    } else {
-      feedback.textContent = 'Incorrect';
-      feedback.classList.add('incorrect');
-      incorrectAnswers++;
-    }
-    
-    updateScore();
-    
-    answerElems.forEach(function(elem) {
-      elem.classList.add('disabled');
-    });
-    
-    nextButton.classList.remove('disabled');
-  }  
-  
-
+  nextButton.classList.remove("disabled");
+}
