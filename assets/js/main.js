@@ -162,7 +162,7 @@ function gameOver() {
 }
 
 const initalsBtn = document.querySelector("#save");
-const saveInitials = document.querySelector("#initials");
+const saveInitials = document.querySelector("#save-initials");
 initalsBtn.addEventListener("click", function (event) {
   event.preventDefault();
   console.log(saveInitials.value);
