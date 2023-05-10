@@ -10,7 +10,9 @@ As an aspiring developer enrolled in a coding boot camp, I need to create a time
 * If a question is answered incorrectly, time is subtracted from the clock.
 * The game ends when all the questions have been answered  or the timer reaches zero. 
 * Then the user can save their initials and score.
+
 # Link to website
+
 
 # Image of website
 
